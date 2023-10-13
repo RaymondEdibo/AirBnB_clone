@@ -1,1 +1,1 @@
-AirBnB Clone - Command Line Interpreter
+Welcome to the AirBnB clone project!
