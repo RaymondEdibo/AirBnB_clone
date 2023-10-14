@@ -33,6 +33,7 @@ class TestConsoleDocs(unittest.TestCase):
         result = pep8s.check_files(['tests/test_console.py'])
         self.assertEqual(result.total_errors, 0,
                          "Found code style errors (and warnings).")
+        
     def test_HBNBCommand_class_docstring(self):
         """HBNBCommand class docstring"""
         self.assertIsNot(HBNBCommand.__doc__, None,
