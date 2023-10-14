@@ -27,13 +27,6 @@ class TestBaseModelDocs(unittest.TestCase):
                 errors = pycodestyle.Checker(path).check_all()
                 self.assertEqual(errors, 0)
 
-    def test_module_docstring(self):
-        """existence of module docstring"""
-        self.assertIsNot(module_doc, None,
-                         "base_model.py needs a docstring")
-        self.assertTrue(len(module_doc) > 1,
-                        "base_model.py needs a docstring")
-
     def test_class_docstring(self):
         """class docstring"""
         self.assertIsNot(BaseModel.__doc__, None,
@@ -55,6 +48,12 @@ class TestBaseModelDocs(unittest.TestCase):
                     "{:s} method needs a docstring".format(func[0])
                 )
 
+    def test_module_docstring(self):
+        """existence of module docstring"""
+        self.assertIsNot(module_doc, None,
+                         "base_model.py needs a docstring")
+        self.assertTrue(len(module_doc) > 1,
+                        "base_model.py needs a docstring")
 
 class TestBaseModel(unittest.TestCase):
     """BaseModel class"""
@@ -112,6 +111,17 @@ class TestBaseModel(unittest.TestCase):
                                  '-[0-9a-f]{12}$')
         self.assertNotEqual(inst1.id, inst2.id)
 
+    def test_to_dict_values(self):
+        """test correct values in dict returned from to_dict"""
+        t_format = "%Y-%m-%dT%H:%M:%S.%f"
+        bm = BaseModel()
+        new_d = bm.to_dict()
+        self.assertEqual(new_d["__class__"], "BaseModel")
+        self.assertEqual(type(new_d["created_at"]), str)
+        self.assertEqual(type(new_d["updated_at"]), str)
+        self.assertEqual(new_d["created_at"], bm.created_at.strftime(t_format))
+        self.assertEqual(new_d["updated_at"], bm.updated_at.strftime(t_format))
+        
     def test_to_dict(self):
         """conversion of object to dictionary (for json)"""
         my_model = BaseModel()
@@ -128,18 +138,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(d['__class__'], 'BaseModel')
         self.assertEqual(d['name'], "Holberton")
         self.assertEqual(d['my_number'], 89)
-
-    def test_to_dict_values(self):
-        """test correct values in dict returned from to_dict"""
-        t_format = "%Y-%m-%dT%H:%M:%S.%f"
-        bm = BaseModel()
-        new_d = bm.to_dict()
-        self.assertEqual(new_d["__class__"], "BaseModel")
-        self.assertEqual(type(new_d["created_at"]), str)
-        self.assertEqual(type(new_d["updated_at"]), str)
-        self.assertEqual(new_d["created_at"], bm.created_at.strftime(t_format))
-        self.assertEqual(new_d["updated_at"], bm.updated_at.strftime(t_format))
-
+    
     def test_str(self):
         """str method has correct output"""
         inst = BaseModel()
