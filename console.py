@@ -2,13 +2,30 @@
 """Console module for AirBnB Clone Project"""
 
 import cmd
+import models
 import sys
+import shlex
+from datetime import datetime
 from models import storage
 from models.base_model import BaseModel
-
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 
 class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
+    __classes = [
+            "Amenity",
+            "BaseModel",
+            "City",
+            "Place",
+            "Review",
+            "State",
+            "User"
+    ]
 
     def do_quit(self, args):
         """Quit command to exit the program"""
@@ -27,7 +44,7 @@ class HBNBCommand(cmd.Cmd):
 
         args = args.split()
         if len(args) == 0:
-            print("** Class name missing **")
+            print("** class name missing **")
         elif args[0] in HBNBCommand.__classes:
             new_creation = eval(args[0] + '()')
             models.storage.save()
@@ -44,7 +61,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         elif strings[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
-        elif len(strings) == 1:
+        elif len(strings) < 2:
             print("** instance id missing **")
         else:
             obj = models.storage.all()
@@ -60,15 +77,19 @@ class HBNBCommand(cmd.Cmd):
 
         args = args.split()
         objects = models.storage.all()
+        key_find = None
 
         if len(args) == 0:
             print('** class name missing **')
-        elif args[0] not in HBNBCommand.__classes:
-            print("** class doesn't exist **")
-        elif len(args) == 1:
+            return
+        if args[0] != "destroy":
+            print("** classname missing **")
+            return
+        if len(args) < 2:
             print('** instance id missing **')
-        else:
-            key_find = args[0] + '.' + args[1]
+            return
+
+            key_find = args[2]
         if key_find in objects.keys():
             objects.pop(key_find, None)
             models.storage.save()
